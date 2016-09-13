@@ -1,31 +1,110 @@
 package com.a10h3y.paywhat;
 
+import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.a10h3y.paywhat.adapter.CardRectclerViewAdapter;
+import com.a10h3y.paywhat.bean.CardInfoBean;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+    @BindView(R.id.rectclerView)
+    RecyclerView rectclerView;
+
+    private CardRectclerViewAdapter cardRectclerViewAdapter;
+
+    private List<CardInfoBean>cardInfoBeanList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        cardInfoBeanList  = new ArrayList<>();
+
+        cardRectclerViewAdapter = new CardRectclerViewAdapter(this,cardInfoBeanList);
+
+        cardRectclerViewAdapter.setOnItemClickLitener(new CardRectclerViewAdapter.OnItemClickLitener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            public void onItemClick(View view, int position) {
+                Snackbar.make(view, "setOnItemClickLitener"+position, Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+                Snackbar.make(view, "onItemLongClick"+position, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
+
+        initData();
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
+
+                Intent intent = new Intent(MainActivity.this,HYAddCardActivity.class);
+
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void initData(){
+
+        //设置布局管理器
+        rectclerView.setLayoutManager(new LinearLayoutManager(this));
+        //设置adapter
+        rectclerView.setAdapter(cardRectclerViewAdapter);
+        //设置Item增加、移除动画
+        rectclerView.setItemAnimator(new DefaultItemAnimator());
+        //添加分割线
+        /*rectclerView.addItemDecoration(new DividerItemDecoration(
+                getActivity(), DividerItemDecoration.HORIZONTAL_LIST));*/
+        rectclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                super.onDraw(c, parent, state);
+
+            }
+        });
+
+
+
+        for (int i = 0; i < 100; i++) {
+            CardInfoBean cardInfoBean = new CardInfoBean();
+            cardInfoBean.setCardName("银行卡"+i);
+            cardInfoBean.setCardNum("卡号"+i);
+            cardInfoBeanList.add(cardInfoBean);
+        }
+
+        cardRectclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override
