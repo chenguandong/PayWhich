@@ -1,10 +1,13 @@
 package com.a10h3y.paywhat;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.a10h3y.paywhat.Manager.RealmDBManager;
 import com.a10h3y.paywhat.adapter.CardRectclerViewAdapter;
 import com.a10h3y.paywhat.bean.CardInfoBean;
 
@@ -35,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private CardRectclerViewAdapter cardRectclerViewAdapter;
 
     private List<CardInfoBean>cardInfoBeanList;
+    
+    private Context context;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        
+        context = this;
 
         cardInfoBeanList  = new ArrayList<>();
 
@@ -55,9 +64,34 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onItemLongClick(View view, int position) {
-                Snackbar.make(view, "onItemLongClick"+position, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onItemLongClick(final View view, final int position) {
+
+                new AlertDialog.Builder(context)
+                        .setItems(new String[]{"删除","修改"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (which==0){
+
+                            RealmDBManager.getInstance().deleteCardInfo(cardInfoBeanList.get(position));
+
+                            reloadData();
+
+                        }else{
+                            Snackbar.make(view, "修改", Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                        }
+
+                    }
+                })
+                        .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
             }
         });
 
@@ -71,11 +105,38 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(MainActivity.this,HYAddCardActivity.class);
 
-                startActivity(intent);
+                startActivityForResult(intent,0);
+
             }
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (resultCode==RESULT_OK){
+
+            reloadData();
+        }
+    }
+
+    //重新从数据库查询数据
+    private void reloadData(){
+
+        cardInfoBeanList.clear();
+
+        List<CardInfoBean>tempList = RealmDBManager.getInstance().queryAllCardInfoWithSort(RealmDBManager.SortBy.SORT_BY_DISTANCE_BILL_DAY);
+
+        if (tempList!=null){
+            cardInfoBeanList.addAll(tempList);
+        }
+
+        cardRectclerViewAdapter.notifyDataSetChanged();
+    }
+
+    //初始化数据
     private void initData(){
 
         //设置布局管理器
@@ -95,16 +156,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        reloadData();
 
 
-        for (int i = 0; i < 100; i++) {
-            CardInfoBean cardInfoBean = new CardInfoBean();
-            cardInfoBean.setCardName("银行卡"+i);
-            cardInfoBean.setCardNum("卡号"+i);
-            cardInfoBeanList.add(cardInfoBean);
-        }
-
-        cardRectclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override
