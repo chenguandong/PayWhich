@@ -6,6 +6,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by guandongchen on 2016/10/8.
@@ -70,13 +71,13 @@ public class RealmDBManager {
         switch (sortBy) {
             case SORT_BY_DISTANCE_BILL_DAY:
 
-                 result.sort(CardInfoBean.CARD_DISTANCE_BILL_DAY);
+                result=result.sort(CardInfoBean.CARD_DISTANCE_BILL_DAY, Sort.DESCENDING);
 
                 break;
 
             case SORT_BY_DISTANCE_PAY_DAY:
 
-                 result.sort(CardInfoBean.CARD_DISTANCE_PAY_DAY);
+                result=result.sort(CardInfoBean.CARD_DISTANCE_PAY_DAY,Sort.DESCENDING);
 
                 break;
 

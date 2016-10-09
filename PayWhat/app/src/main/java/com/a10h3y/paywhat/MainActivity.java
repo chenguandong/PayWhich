@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
                             RealmDBManager.getInstance().deleteCardInfo(cardInfoBeanList.get(position));
 
-                            reloadData();
+                            reloadData(null);
 
                         }else{
                             Snackbar.make(view, "修改", Snackbar.LENGTH_LONG)
@@ -118,23 +118,33 @@ public class MainActivity extends AppCompatActivity {
 
         if (resultCode==RESULT_OK){
 
-            reloadData();
+            reloadData(null);
         }
     }
 
     //重新从数据库查询数据
-    private void reloadData(){
+    private void reloadData(RealmDBManager.SortBy sortBy){
 
         cardInfoBeanList.clear();
 
-        List<CardInfoBean>tempList = RealmDBManager.getInstance().queryAllCardInfoWithSort(RealmDBManager.SortBy.SORT_BY_DISTANCE_BILL_DAY);
+        List<CardInfoBean>tempList = null;
+
+        if (sortBy!=null){
+            tempList = RealmDBManager.getInstance().queryAllCardInfoWithSort(sortBy);
+
+        }else{
+            tempList = RealmDBManager.getInstance().queryAllCardInfoWithSort(RealmDBManager.SortBy.SORT_BY_DISTANCE_BILL_DAY);
+
+         }
 
         if (tempList!=null){
             cardInfoBeanList.addAll(tempList);
         }
 
         cardRectclerViewAdapter.notifyDataSetChanged();
+
     }
+
 
     //初始化数据
     private void initData(){
@@ -156,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        reloadData();
+        reloadData(null);
 
 
     }
@@ -176,7 +186,17 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_sort_by_bill) {
+
+            reloadData(RealmDBManager.SortBy.SORT_BY_DISTANCE_BILL_DAY);
+
+            return true;
+        }
+
+        if (id == R.id.action_sort_by_pay){
+
+            reloadData(RealmDBManager.SortBy.SORT_BY_DISTANCE_PAY_DAY);
+
             return true;
         }
 

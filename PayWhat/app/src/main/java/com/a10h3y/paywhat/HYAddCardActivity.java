@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.NumberPicker;
@@ -53,9 +54,20 @@ public class HYAddCardActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        toolbar.setNavigationIcon(R.drawable.back);
+
+        toolbar.setTitle("添加银行卡");
+
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finish();
+            }
+        });
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,19 +79,44 @@ public class HYAddCardActivity extends AppCompatActivity {
 
                     Calendar afterDistanceBillCalendar = Calendar.getInstance(Locale.getDefault());
 
-                    afterDistanceBillCalendar.add(Calendar.MONTH,new Integer(getStringFromEditText(cardBillEditText)));
-
                     Calendar afterDistancePayCalendar = Calendar.getInstance(Locale.getDefault());
-
-                    afterDistancePayCalendar.add(Calendar.MONTH,new Integer(getStringFromEditText(cardPayEditText)));
 
                     int distanceBillDay;
 
                     int distancePayDay;
 
-                    distanceBillDay= (int) ((afterDistanceBillCalendar.getTime().getTime()-nowCalendar.getTime().getTime())/(24*60*60*1000));
+                    Log.i("TAG", String.valueOf(nowCalendar.get(Calendar.DATE)));
 
-                    distancePayDay= (int) ((afterDistancePayCalendar.getTime().getTime()-nowCalendar.getTime().getTime())/(24*60*60*1000));
+                    if (nowCalendar.get(Calendar.DATE)>=new Integer(getStringFromEditText(cardBillEditText))){
+
+                        afterDistanceBillCalendar.add(Calendar.MONTH,1);
+
+                        afterDistanceBillCalendar.set(Calendar.DAY_OF_MONTH,new Integer(getStringFromEditText(cardBillEditText)));
+
+                        afterDistanceBillCalendar.set(Calendar.YEAR,nowCalendar.get(Calendar.YEAR));
+
+                        distanceBillDay= (int) ((afterDistanceBillCalendar.getTime().getTime()-nowCalendar.getTime().getTime())/(24*60*60*1000));
+
+                    }else{
+                        distanceBillDay = new Integer(getStringFromEditText(cardBillEditText))-nowCalendar.get(Calendar.DATE);
+                    }
+
+                    if (nowCalendar.get(Calendar.DATE)>=new Integer(getStringFromEditText(cardPayEditText))){
+
+                        afterDistancePayCalendar.add(Calendar.MONTH,1);
+
+                        afterDistancePayCalendar.set(Calendar.DAY_OF_MONTH,new Integer(getStringFromEditText(cardBillEditText)));
+
+                        afterDistancePayCalendar.set(Calendar.YEAR,nowCalendar.get(Calendar.YEAR));
+
+                        distancePayDay= (int) ((afterDistancePayCalendar.getTime().getTime()-nowCalendar.getTime().getTime())/(24*60*60*1000));
+
+                    }else{
+
+                        distancePayDay = new Integer(getStringFromEditText(cardPayEditText))-nowCalendar.get(Calendar.DATE);
+                    }
+
+
 
 
                     CardInfoBean cardInfoBean = new CardInfoBean();
@@ -87,6 +124,7 @@ public class HYAddCardActivity extends AppCompatActivity {
                     cardInfoBean.setCardName(getStringFromEditText(cardNameEditText));
 
                     cardInfoBean.setCardNum(getStringFromEditText(cardNumEditText));
+
 
                     cardInfoBean.setCardBillDay(new Integer(getStringFromEditText(cardBillEditText)));
 

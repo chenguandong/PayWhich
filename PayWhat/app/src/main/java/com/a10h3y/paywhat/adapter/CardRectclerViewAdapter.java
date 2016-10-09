@@ -79,6 +79,10 @@ public class CardRectclerViewAdapter extends RecyclerView.Adapter<CardRectclerVi
         holder.cardNameTextView.setText(cardInfoBean.getCardName());
 
         holder.cardNumTextView.setText(cardInfoBean.getCardNum());
+
+        holder.cardBillDayTextView.setText("距账单日："+cardInfoBean.getDistanceBillDay());
+
+        holder.cardPayDayTextView.setText("距还款日："+cardInfoBean.getDistancePayDay());
     }
 
 
@@ -93,12 +97,20 @@ public class CardRectclerViewAdapter extends RecyclerView.Adapter<CardRectclerVi
 
         TextView cardNumTextView;
 
+        TextView cardBillDayTextView;
+
+        TextView cardPayDayTextView;
+
         public MyViewHolder(View itemView) {
             super(itemView);
 
             cardNameTextView = (TextView) itemView.findViewById(R.id.cardNameTextView);
 
             cardNumTextView = (TextView) itemView.findViewById(R.id.cardNumTextView);
+
+            cardBillDayTextView = (TextView) itemView.findViewById(R.id.cardBillDayTextView);
+
+            cardPayDayTextView = (TextView) itemView.findViewById(R.id.cardPayDayTextView);
         }
     }
 }

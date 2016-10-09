@@ -7,7 +7,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.a10h3y.paywhat.MainActivity"
     tools:showIn="@layout/activity_main"
-    android:background="#00B2EE"
+    android:background="@color/colorPrimaryDark"
     >
 
    <android.support.v7.widget.RecyclerView
