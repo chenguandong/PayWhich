@@ -59,15 +59,15 @@ public class MainActivity extends AppCompatActivity {
         cardRectclerViewAdapter.setOnItemClickLitener(new CardRectclerViewAdapter.OnItemClickLitener() {
             @Override
             public void onItemClick(View view, int position) {
-                Snackbar.make(view, "setOnItemClickLitener"+position, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "setOnItemClickLitener"+position, Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
             }
 
             @Override
             public void onItemLongClick(final View view, final int position) {
 
                 new AlertDialog.Builder(context)
-                        .setItems(new String[]{"删除","修改"}, new DialogInterface.OnClickListener() {
+                        .setItems(new String[]{"删除"}, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 

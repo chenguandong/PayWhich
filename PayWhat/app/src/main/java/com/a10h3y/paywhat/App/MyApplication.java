@@ -2,6 +2,8 @@ package com.a10h3y.paywhat.App;
 
 import android.app.Application;
 
+import com.a10h3y.paywhat.Tools.DateTools;
+
 import io.realm.Realm;
 
 
@@ -17,6 +19,8 @@ public class MyApplication extends Application{
 
         //初始化Realm 数据库
         Realm.init(this);
+
+        DateTools.getInstance();
 
     }
 }

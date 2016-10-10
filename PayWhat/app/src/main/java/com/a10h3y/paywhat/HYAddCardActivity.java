@@ -2,23 +2,20 @@ package com.a10h3y.paywhat;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 
 import com.a10h3y.paywhat.Manager.RealmDBManager;
+import com.a10h3y.paywhat.Tools.DateTools;
 import com.a10h3y.paywhat.bean.CardInfoBean;
-
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,8 +23,6 @@ import butterknife.ButterKnife;
 public class HYAddCardActivity extends AppCompatActivity {
 
     private Context context;
-
-    private Calendar nowCalendar;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -47,8 +42,6 @@ public class HYAddCardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         context = this;
-
-        nowCalendar = Calendar.getInstance(Locale.getDefault());
 
         setContentView(R.layout.activity_hyadd_card);
 
@@ -77,45 +70,16 @@ public class HYAddCardActivity extends AppCompatActivity {
                 //验证数据无误存入数据库
                 if (valadateInputcardInfo(view)){
 
-                    Calendar afterDistanceBillCalendar = Calendar.getInstance(Locale.getDefault());
 
-                    Calendar afterDistancePayCalendar = Calendar.getInstance(Locale.getDefault());
-
+                    //距账单日天数
                     int distanceBillDay;
 
+                    //距还款日天数
                     int distancePayDay;
 
-                    Log.i("TAG", String.valueOf(nowCalendar.get(Calendar.DATE)));
+                    distanceBillDay = DateTools.getDistanceDays(new Integer(getStringFromEditText(cardBillEditText)));
 
-                    if (nowCalendar.get(Calendar.DATE)>=new Integer(getStringFromEditText(cardBillEditText))){
-
-                        afterDistanceBillCalendar.add(Calendar.MONTH,1);
-
-                        afterDistanceBillCalendar.set(Calendar.DAY_OF_MONTH,new Integer(getStringFromEditText(cardBillEditText)));
-
-                        afterDistanceBillCalendar.set(Calendar.YEAR,nowCalendar.get(Calendar.YEAR));
-
-                        distanceBillDay= (int) ((afterDistanceBillCalendar.getTime().getTime()-nowCalendar.getTime().getTime())/(24*60*60*1000));
-
-                    }else{
-                        distanceBillDay = new Integer(getStringFromEditText(cardBillEditText))-nowCalendar.get(Calendar.DATE);
-                    }
-
-                    if (nowCalendar.get(Calendar.DATE)>=new Integer(getStringFromEditText(cardPayEditText))){
-
-                        afterDistancePayCalendar.add(Calendar.MONTH,1);
-
-                        afterDistancePayCalendar.set(Calendar.DAY_OF_MONTH,new Integer(getStringFromEditText(cardBillEditText)));
-
-                        afterDistancePayCalendar.set(Calendar.YEAR,nowCalendar.get(Calendar.YEAR));
-
-                        distancePayDay= (int) ((afterDistancePayCalendar.getTime().getTime()-nowCalendar.getTime().getTime())/(24*60*60*1000));
-
-                    }else{
-
-                        distancePayDay = new Integer(getStringFromEditText(cardPayEditText))-nowCalendar.get(Calendar.DATE);
-                    }
-
+                    distancePayDay  = DateTools.getDistanceDays(new Integer(getStringFromEditText(cardPayEditText)));
 
 
 

@@ -1,5 +1,6 @@
 package com.a10h3y.paywhat.Manager;
 
+import com.a10h3y.paywhat.Tools.DateTools;
 import com.a10h3y.paywhat.bean.CardInfoBean;
 
 import java.util.List;
@@ -63,6 +64,11 @@ public class RealmDBManager {
 
         RealmResults<CardInfoBean> result = realm.where(CardInfoBean.class).findAll();
 
+        for (CardInfoBean cardInfoBean:
+             result) {
+            upDataCardInfo(cardInfoBean);
+        }
+
         if (result.size()==0){
 
             return null;
@@ -93,6 +99,23 @@ public class RealmDBManager {
             public void execute(Realm realm) {
 
                 cardInfoBean.deleteFromRealm();
+            }
+        });
+    }
+
+    /**
+     * 根据心在时间重新计算 还款日和账单日
+     * @param cardInfoBean
+     */
+    public  static void upDataCardInfo(final CardInfoBean cardInfoBean){
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+                cardInfoBean.setDistanceBillDay(DateTools.getDistanceDays(cardInfoBean.getCardBillDay()));
+
+                cardInfoBean.setCardPayDay(DateTools.getDistanceDays(cardInfoBean.getCardPayDay()));
             }
         });
     }

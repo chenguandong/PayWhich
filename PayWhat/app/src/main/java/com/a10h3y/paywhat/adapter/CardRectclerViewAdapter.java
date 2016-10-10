@@ -80,9 +80,9 @@ public class CardRectclerViewAdapter extends RecyclerView.Adapter<CardRectclerVi
 
         holder.cardNumTextView.setText(cardInfoBean.getCardNum());
 
-        holder.cardBillDayTextView.setText("距账单日："+cardInfoBean.getDistanceBillDay());
+        holder.cardBillDayTextView.setText("距账单日："+(cardInfoBean.getDistanceBillDay()==0?"今天":cardInfoBean.getDistanceBillDay()));
 
-        holder.cardPayDayTextView.setText("距还款日："+cardInfoBean.getDistancePayDay());
+        holder.cardPayDayTextView.setText("距还款日："+(cardInfoBean.getDistancePayDay()==0?"今天":cardInfoBean.getDistancePayDay()));
     }
 
 
